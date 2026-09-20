@@ -30,16 +30,11 @@ void transfer() {
         });
 #else
         __transaction_atomic {
-            if (a_to_b) {
-                if (amount <= balance_a) {
-                    balance_a -= amount;
-                    balance_b += amount;
-                }
-            } else {
-                if (amount <= balance_b) {
-                    balance_a += amount;
-                    balance_b -= amount;
-                }
+            int& from = a_to_b ? balance_a : balance_b;
+            int& to = a_to_b ? balance_b : balance_a;
+            if (amount <= from) {
+                from -= amount;
+                to += amount;
             }
         }
 #endif
